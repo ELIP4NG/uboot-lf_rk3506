@@ -29,27 +29,36 @@ default:
 	@just --list
 
 # Configure with defconfig
+# WARNING: This resets .config - use only when needed
 defcfg:
 	mkdir -p {{log_dir}}
 	make ARCH={{arch}} CROSS_COMPILE={{cross_compile_prefix}} {{defconfig}} 2>&1 | tee {{log_file}}
 
-# Build U-Boot
+# Build U-Boot (incremental - preserves .config)
+# This is the normal daily build - does NOT reset configuration
 build:
 	mkdir -p {{log_dir}}
 	make {{parallel_flag}} ARCH={{arch}} CROSS_COMPILE={{cross_compile_prefix}} 2>&1 | tee {{log_file}}
 
-# Build from scratch
+# Build from scratch: clean + defconfig + build
+# WARNING: This will reset .config to defaults!
+# Use this only when:
+# - Setting up a new project
+# - Resetting to default configurations
+# - Troubleshooting build issues
 from-scratch: mrproper defcfg build
 
-# Clean
+# Clean (preserves .config)
 clean:
 	make clean
 
-# Deep clean
+# Deep clean: removes .config and build artifacts (mrproper)
+# WARNING: This resets .config!
 mrproper:
 	make mrproper
 
-# Menuconfig
+# Interactive configuration editor
+# WARNING: This modifies .config - use with caution!
 menuconfig:
 	make ARCH={{arch}} CROSS_COMPILE={{cross_compile_prefix}} menuconfig
 
