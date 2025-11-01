@@ -38,9 +38,6 @@ build:
 	mkdir -p {{log_dir}}
 	make {{parallel_flag}} ARCH={{arch}} CROSS_COMPILE={{cross_compile_prefix}} 2>&1 | tee {{log_file}}
 
-# Full build
-all: defcfg build
-
 # Build from scratch
 from-scratch: mrproper defcfg build
 
