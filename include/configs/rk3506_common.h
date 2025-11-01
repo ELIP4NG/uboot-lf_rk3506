@@ -73,6 +73,23 @@
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	ENV_MEM_LAYOUT_SETTINGS \
+	"boot_script=boot.cmd\0" \
+	"bootdelay=1\0" \
+	"load_boot_script=" \
+		"echo Searching for ${boot_script} on mmc 0:2...; " \
+		"if fatload mmc 0:2 ${scriptaddr} ${boot_script}; then " \
+			"echo Loaded ${boot_script} from eMMC partition 2; " \
+		"else " \
+			"echo Failed to load ${boot_script}; " \
+			"false; " \
+		"fi\0" \
+	"run_boot_script=" \
+		"if script ${scriptaddr}; then " \
+			"echo Boot script executed successfully; " \
+		"else " \
+			"echo Boot script execution failed; " \
+		"fi\0" \
+	"bootcmd=run load_boot_script run_boot_script\0" \
 	"partitions=" PARTS_RKIMG \
 	ROCKCHIP_DEVICE_SETTINGS \
 	RKIMG_DET_BOOTDEV \
